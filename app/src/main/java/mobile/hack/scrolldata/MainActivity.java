@@ -204,8 +204,56 @@ public class MainActivity extends Activity {
                         append("respFilesString: " + new String(Arrays.copyOfRange(messageBytes,
                                 73,75),"ISO-8859-1"));*/
 
-                    } else if (stringReceived.contains("Visa")) {
+                    } else if (stringReceived.contains("Visa") || stringReceived.contains("A0 00 00 00 03 10 10")) {
                         append("Visa application confirmed.");
+
+                        // Form select string request
+                        append("Selecting Visa AID Credit RID PIX");
+                        bytesToSend = stringToBytes("00 A4 04 00 07 A0 00 00 00 03 10 10 00");
+                        append("Sending ASCII: " + new String(bytesToSend,"ISO-8859-1"));
+                        append("Sending Bytes: " + Arrays.toString(bytesToSend));
+                        append("Sending Hex: " + bytesToHex(bytesToSend));
+
+                        // Send formatted bytes request
+                        bytesReceived = isoDep.transceive(bytesToSend);
+                        stringReceived = new String(bytesReceived, "ISO-8859-1");
+                        append("Received Bytes: " + Arrays.toString(bytesReceived));
+                        append("Received Hex: " + bytesToHex(bytesReceived));
+                        append("Received ASCII: " + stringReceived);
+
+
+                        // Form select string request
+                        // TODO fix issue in not receing 9000 response
+                        append("Sending Get Processing Options GPO");
+
+                        // Original backed out
+                        // bytesToSend = stringToBytes("80 A8 00 00 23 83 21 80 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00");
+                        bytesToSend = stringToBytes("80 A8 00 00 12 83 10 B6 20 C0 00 00 00 00 00 00 01 90 00 00 10 05 54 00");
+
+                        append("Sending ASCII: " + new String(bytesToSend,"ISO-8859-1"));
+                        append("Sending Bytes: " + Arrays.toString(bytesToSend));
+                        append("Sending Hex: " + bytesToHex(bytesToSend));
+
+                        // Send formatted bytes request
+                        bytesReceived = isoDep.transceive(bytesToSend);
+                        stringReceived = new String(bytesReceived, "ISO-8859-1");
+                        append("Received Bytes: " + Arrays.toString(bytesReceived));
+                        append("Received Hex: " + bytesToHex(bytesReceived));
+                        append("Received ASCII: " + stringReceived);
+
+                        // Form select string request
+                        //append("Send READ RECORD");
+                        //bytesToSend = stringToBytes("00 B2 01 0C 00");
+                        //append("Sending ASCII: " + new String(bytesToSend,"ISO-8859-1"));
+                        //append("Sending Bytes: " + Arrays.toString(bytesToSend));
+                        //append("Sending Hex: " + bytesToHex(bytesToSend));
+
+                        // Send formatted bytes request
+                        //bytesReceived = isoDep.transceive(bytesToSend);
+                        //stringReceived = new String(bytesReceived, "ISO-8859-1");
+                        //append("Received Bytes: " + Arrays.toString(bytesReceived));
+                        //append("Received Hex: " + bytesToHex(bytesReceived));
+                        //append("Received ASCII: " + stringReceived);
                     }
 
                     /*byte[] SELECT = {
@@ -348,7 +396,7 @@ public class MainActivity extends Activity {
                 append("Mifare classic disconnecting");
                 mifareClassic.close();
             } catch (IOException e) {
-                    append("ERROR: Mifare Classic connect attempt failed: " + e.getMessage());
+                append("ERROR: Mifare Classic connect attempt failed: " + e.getMessage());
             }
         } else {
             append("Not entering Mifare Classic flow.");
@@ -388,7 +436,7 @@ public class MainActivity extends Activity {
             append("Not entering Ultralight logic.");
         }
 
-            // If the tag supports NDEF then get the list of messages
+        // If the tag supports NDEF then get the list of messages
         /*if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getIntent().getAction())) {
             NdefMessage[] msgs;
                 append("NDEF Confirmed");
